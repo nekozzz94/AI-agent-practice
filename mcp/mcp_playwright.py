@@ -117,9 +117,10 @@ async def chat(user_input):
     await mcp_client.connect_to_server("http://localhost:8931/sse")
     tools = await mcp_client.get_tools()    
 
+    model = "meta-llama-3.1-8b-instruct"
     # 1st LLM call to determine which tool to use
     response = await client.chat.completions.create(
-        model="deepseek-r1-distill-qwen-7b",
+        model=model,
         messages=[
             {"role": "system", "content": "Always answer in Vietnamese."},
             {"role": "user", "content": user_input}
@@ -139,7 +140,7 @@ async def chat(user_input):
 
         # 2nd LLM call to determine final response
         res = await client.chat.completions.create(
-            model="deepseek-r1-distill-qwen-7b",
+            model=model,
             messages=[
                 {"role": "system", "content": "Always answer in Vietnamese."},
                 {"role": "user", "content": user_input},

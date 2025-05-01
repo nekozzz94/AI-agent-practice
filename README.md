@@ -1,5 +1,6 @@
 # AI-agent-practice
-## 1. Start MCP playwright server:
+## 1. MCP demo:
+### 1.1 Start MCP playwright server:
 
 ```bash
 #install npx
@@ -13,6 +14,9 @@ npx playwright install chrome
 npx @playwright/mcp@latest --port 8931
 ```
 
-## 2. Start LLM server with LLM Studio
-## 3. Run AI agent
+![alt text](mcp.png)
 
+### 1.2 Start LLM server with LLM Studio
+### 1.3 Run AI agent
+
+![alt text](chat.png)
