@@ -9,11 +9,12 @@ class MCPClient:
         session (Optional[ClientSession]): The active client session with the MCP server.
         exit_stack (AsyncExitStack): Context manager for handling async resources.
     """
-    def __init__(self):
+    def __init__(self, mcp_server_url):
         self.session: Optional[ClientSession] = None
         self.exit_stack = AsyncExitStack()
+        self.mcp_server_url = mcp_server_url
         
-    async def connect_to_server(self, mcp_server_url):
+    async def __aenter__(self):
         """Establishes an async connection to the MCP server using SSE transport.
         
         Args:
@@ -27,7 +28,7 @@ class MCPClient:
         """
 
         sse_transport = await self.exit_stack.enter_async_context(
-            sse_client(mcp_server_url)
+            sse_client(self.mcp_server_url)
         )
         read, write = sse_transport
 
@@ -37,7 +38,7 @@ class MCPClient:
 
         await self.session.initialize()       
                 
-        return self.session
+        return self
     
     async def get_tools(self):
         """Make a call to MCP server
@@ -54,7 +55,7 @@ class MCPClient:
         
         return response
     
-    async def disconnect(self):
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
         """Cleanly disconnects from the MCP server.
         
         Closes the async exit stack and cleans up the client session.
