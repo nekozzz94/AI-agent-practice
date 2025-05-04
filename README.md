@@ -1,22 +1,14 @@
-# AI-agent-practice
-## 1. MCP demo:
-### 1.1 Start MCP playwright server:
+# AI-agent-practice:  
 
-```bash
-#install npx
-sudo apt install npm
-mkdir npx
-sudo npx playwright install-deps
-npx playwright install chrome
+*This repository documents my journey of practicing AI Agents*
 
-#start MCP server
-#https://github.com/microsoft/playwright-mcp
-npx @playwright/mcp@latest --port 8931
+## 🍀 Topics:
+[1. MCP](mcp/README.md):
+```yml
+    - MCP playwright
+    - OpenAI client lib
+    - Gemini API lib
+    - Python asyncio
 ```
 
-![alt text](mcp.png)
-
-### 1.2 Start LLM server with LLM Studio
-### 1.3 Run AI agent
-
-![alt text](chat.png)
+## 🐾 References:  

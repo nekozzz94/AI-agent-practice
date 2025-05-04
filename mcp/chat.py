@@ -1,11 +1,13 @@
-from mcp_playwright import chat
+from libs import gemini_chat
 
 import asyncio
 
 async def main():
-    user_input = 'top news in https://vnexpress.net/?'
+    while True:
+        user_input = input("Enter your message (or 'e' to quit): ")
+        if user_input.lower() == 'e':
+            break
 
-    res = await chat(user_input)
-    print(res)
+        await gemini_chat(user_input)
 
 asyncio.run(main())
