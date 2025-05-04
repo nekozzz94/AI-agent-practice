@@ -4,11 +4,7 @@ from mcp import ClientSession
 from mcp.client.sse import sse_client
 
 class MCPClient:
-    """A client for interacting with Gmail through the Zapier MCP (Model Context Protocol) server.
-    
-    This client establishes and manages a connection to an MCP server using Server-Sent Events (SSE),
-    allowing for tool discovery and execution of Gmail-related operations.
-    
+    """A client for interacting with a MCP (Model Context Protocol) server.    
     Attributes:
         session (Optional[ClientSession]): The active client session with the MCP server.
         exit_stack (AsyncExitStack): Context manager for handling async resources.
@@ -29,33 +25,25 @@ class MCPClient:
         Raises:
             ConnectionError: If the connection to the server cannot be established.
         """
-        # Connect using SSE transport
+
         sse_transport = await self.exit_stack.enter_async_context(
             sse_client(mcp_server_url)
         )
         read, write = sse_transport
-        
-        # Create the client session
+
         self.session = await self.exit_stack.enter_async_context(
             ClientSession(read, write)
         )
-        
-        # Initialize the session
+
         await self.session.initialize()       
                 
         return self.session
     
     async def get_tools(self):
-        """Retrieves and formats available tools from the MCP server.
-        
-        Fetches the list of available tools from the connected MCP server and converts
-        them into OpenAI-compatible function schemas.
+        """Make a call to MCP server
         
         Returns:
-            list[dict]: A list of tool definitions in OpenAI function calling format.
-            Each tool is represented as a dictionary containing:
-                - type: The type of the tool (always "function")
-                - function: Dictionary containing name, description, and parameters schema
+            Response from MCP server
                 
         Raises:
             RuntimeError: If called before establishing a server connection.
@@ -75,4 +63,3 @@ class MCPClient:
         """
         await self.exit_stack.aclose()
         self.session = None
-

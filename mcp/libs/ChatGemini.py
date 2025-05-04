@@ -15,7 +15,7 @@ async def chat(user_input):
     Processes user input through a two-step LLM interaction with tool integration.
 
     This function performs the following steps:
-    1. Connects to Gmail MCP server and retrieves available tools
+    1. Connects to MCP playwright server and retrieves available tools
     2. Makes initial LLM call to determine which tool to use
     3. Executes the selected tool with provided arguments
     4. Makes second LLM call to generate final response based on tool output
@@ -65,28 +65,25 @@ async def chat(user_input):
         ),
     )
 
-    # Check for a function call
+
     if response.candidates[0].content.parts[0].function_call:
         tool_call = response.candidates[0].content.parts[0].function_call
         # print(tool_call)
 
-        # Call the MCP server with the predicted tool
         result = await mcp_client.session.call_tool(
             tool_call.name, arguments=tool_call.args
         )
 
-        print(">>>>DEBUG: tool_call result:")
-        print(result.content[0].text)
+        # print(">>>>DEBUG: tool_call result:")
+        # print(result.content[0].text)
 
-        # Create a function response part
         function_response_part = types.Part.from_function_response(
             name=tool_call.name,
             response={"result": result},
         )
 
-        # Append function call and result of the function execution to contents
-        contents.append(types.Content(role="model", parts=[types.Part(function_call=tool_call)])) # Append the model's function call message
-        contents.append(types.Content(role="user", parts=[function_response_part])) # Append the function response
+        contents.append(types.Content(role="model", parts=[types.Part(function_call=tool_call)]))
+        contents.append(types.Content(role="user", parts=[function_response_part]))
 
         final_response = client.models.generate_content(
             model="gemini-2.0-flash",
@@ -101,7 +98,6 @@ async def chat(user_input):
         print("No function call found in the response.")
         print(response.text)
 
-    # disconnect from the server
     await mcp_client.disconnect()
     
     return response   
